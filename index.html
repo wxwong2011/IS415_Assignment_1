@@ -1,0 +1,64 @@
+<script src="data/data.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+<script src="js/track.js"></script>
+<script src="js/station.js"></script>
+<script src="js/proportionSymbol.js"></script>
+<script src="js/choropleth.js"></script>
+
+<html>
+	<head>
+		<link rel="stylesheet" href="css/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="css/theme.css">
+	</head>
+	<body>
+		<div id="map"></div>
+
+		<script>
+
+		// create a map in the "map" div, set the view to a given place and zoom
+		var map = L.map('map').setView([42.351821, -71.1026], 13);
+
+		// add an OpenStreetMap tile layer
+		L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+			attribution : 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+			key : 'BC9A493B41014CAABB98F0471D759707',
+			styleId : 22677
+		}).addTo(map);
+
+		// map.on is a listener
+		// use map.on function to detect the change in layers to change to the relative legends
+		map.on('overlayremove', function (eventLayer) {
+			if (eventLayer.name === 'Population') {
+				console.log("remove");
+				legend.removeFrom(map);
+				info.removeFrom(map);
+			}
+		});
+		
+		map.on('overlayadd', function (eventLayer) {
+			if (eventLayer.name === 'Population') {
+				console.log("add");
+				legend.addTo(map);
+				info.addTo(map);
+			}
+		});
+		
+		//selecting default layer
+		choropleth_layer.addTo(map);
+		legend.addTo(map);
+		info.addTo(map);
+		
+		//adding everything on to the map
+		var overlayMaps = {
+			"Bike Stations" : station_layer,
+			"Bike Tracks" : tracks_layer,
+			"Population" : choropleth_layer,
+			"Bike Station Usage" : proportionSymbol_Layer,
+		};
+
+		L.control.layers(null, overlayMaps).addTo(map);
+						
+		</script>
+		
+	</body>
+</html>
